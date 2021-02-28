@@ -1,0 +1,49 @@
+Part 1:
+1.1 Location(x), Adjacent(x,y)
+1.2 ObjectAt(object, location)
+1.3 Plate(x), HasFood(plate), Free(plate)
+1.4 Customer(x), Served(customer)
+
+1.5
+Plate(p1), Customer(cust1), Location(BUFF), Location(LB), Location(LF), Location(MB), Location(MF), Location(UB), Location(UF), Adjacent(BUFF, UF), Adjacent(UF, MF), Adjacent(MF, LF), Adjacent(LF, LB), Adjacent(LB, MB), Adjacent(MB, UB), Adjacent(UB, UF), ObjectAt(agent, BUFF), ObjectAt(p1, BUFF), ObjectAt(cust1, LB), Free(p1)
+
+1.6
+Action(PickUp(agent, plate)
+	PRECOND: Agent(agent), Plate(plate), Location(location), ObjectAt(plate, location), ObjectAt(agent, location), EmptyHands(agent), Free(plate), not(HasFood(plate))
+	EFFECT: not(EmptyHands(agent)), not(ObjectAt(plate, location)), not(Free(plate)))
+
+1.7
+Action(HandOver(agent, customer, plate, location)
+	PRECOND: Agent(agent), Customer(customer), Plate(plate), Location(location), ObjectAt(customer, location), ObjectAt(agent, location), not(Served(customer)), not(Free(plate)), HasFood(plate)
+	EFFECT: ObjectAt(plate, location), EmptyHands(agent), Free(plate), Served(customer))
+
+1.8
+Action(Fill(agent, plate)
+	PRECOND: Agent(agent), Plate(plate), ObjectAt(agent, BUFF), not(Free(plate)), not(HasFood(plate))
+	EFFECT: HasFood(plate))
+
+1.9
+Action(Move(agent, locationx, locationy)
+	PRECOND: Agent(agent), Location(locationx), Location(locationy), (Adjacent(locationx, locationy) OR Adjacent(locationy, locationx)), ObjectAt(agent, locationx)
+	EFFECT: ObjectAt(agent, locationy), not(ObjectAt(agent, locationx)))
+
+1.10
+There only appeared to be one action to take after each step
+
+g1 = Served(c)
+HandOver(agent, c, p, UF)
+g2 = ObjectAt(agent, UF), ObjectAt(c, UF), HasFood(p)
+Move(agent, BUFF, UF)
+g3 = ObjectAt(agent, BUFF), ObjectAt(c, UF), HasFood(p)
+Fill(agent, p)
+g4 = ObjectAt(agent, BUFF), ObjectAt(c, UF)
+PickUp(agent, p)
+g5 = ObjectAt(agent, BUFF), ObjectAt(c, UF), ObjectAt(p, BUFF)
+
+Part 4:
+4.1
+The goal would have to be changed to add that tea and coffee must all be served hot and ice cream cannot be melted when served. When filling a plate, all the food must be checked to determine the temperature and decide what needs served more urgently.
+
+4.2
+Food would be served based in the order that food orders were taken. But if food is getting too warm or cold, that would take priority over the queue. The order that food orders were taken would need to be tracked, along with how long food has been sitting out for before being served. If tea or coffee gets too cold or ice cream melts, then the agent would need to adjust the time to wait before a food item needs to be served urgently.
+
